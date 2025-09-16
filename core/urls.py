@@ -22,5 +22,5 @@ urlpatterns = [
     path('api/', include('kanban_app.api.urls')),
     path('api/', include('tasks_app.api.urls')),
     path('api/', include('users_auth_app.api.urls')),
-    path('auth/', include('rest_framework.urls')),
+    path('api-auth/', include('rest_framework.urls')),
 ]
