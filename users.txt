@@ -1,0 +1,70 @@
+email: tom@test.de
+password:TommyHilfiger
+
+email: hannah@test.de
+password:HannaMontana
+
+email:takoua@test.de
+password:Sarah0403
+
+
+email: sarah.gh@mail.de
+password: asdsarahasd
+ 
+
+
+/api/registration
+{
+  "fullname": "Example Username",
+  "email": "example@mail.de",
+  "password": "examplePassword",
+  "repeated_password": "examplePassword"
+}
+
+/api/login
+{
+  "email": "example@mail.de",
+  "password": "examplePassword"
+}
+
+////////////////////////////////////////////
+
+POST /api/boards/
+
+{
+  "title": "Neues Projekt",
+  "members": [
+    12,
+    5,
+    54,
+    2
+  ]
+}
+
+
+POST /api/tasks/
+Request Body
+
+{
+  "board": 12,
+  "title": "Code-Review durchführen",
+  "description": "Den neuen PR für das Feature X überprüfen",
+  "status": "review",
+  "priority": "medium",
+  "assignee_id": 13,
+  "reviewer_id": 1,
+  "due_date": "2025-02-27"
+}
+
+PATCH /api/tasks/{task_id}/
+Request Body
+
+{
+  "title": "Code-Review abschließen",
+  "description": "Den PR fertig prüfen und Feedback geben",
+  "status": "done",
+  "priority": "high",
+  "assignee_id": 13,
+  "reviewer_id": 1,
+  "due_date": "2025-02-28"
+}

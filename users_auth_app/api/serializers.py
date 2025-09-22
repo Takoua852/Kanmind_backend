@@ -32,3 +32,4 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Ungültige Zugangsdaten.")
         data["user"] = user
         return data
+
