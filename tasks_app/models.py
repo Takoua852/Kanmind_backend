@@ -19,28 +19,13 @@ class Task(models.Model):
         ("high", "High"),
     ]
 
-    board = models.ForeignKey(
-        Board, related_name="tasks", on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, related_name="tasks", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="to-do")
-    priority = models.CharField(
-        max_length=10, choices=PRIORITY_CHOICES, default="medium")
-    reviewer = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="reviewing_tasks",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
-    assignee = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="assigned_tasks",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="to-do")
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="medium")
+    reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="reviewing_tasks", null=True, blank=True, on_delete=models.SET_NULL)
+    assignee = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="assigned_tasks",null=True, blank=True, on_delete=models.SET_NULL)
     due_date = models.DateField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
 
@@ -49,13 +34,11 @@ class Task(models.Model):
 
     @property
     def comments_count(self):
-        # Zugriff über related_name="comments"
         return self.comments.count()
-
 
 class Comment(models.Model):
     task = models.ForeignKey(Task, related_name="comments", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, )
     author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField(null=True, blank=True)
 

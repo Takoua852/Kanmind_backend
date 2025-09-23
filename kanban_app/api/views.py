@@ -23,8 +23,6 @@ class BoardListView(generics.ListCreateAPIView):
             return BoardCreateSerializer
         return BoardSerializer
 
- 
-
 class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Board.objects.all()
     permission_classes = [IsAuthenticated, IsBoardMemberOrOwner| IsBoardOwner]

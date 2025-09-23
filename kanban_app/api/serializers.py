@@ -17,16 +17,10 @@ class BoardSerializer(serializers.ModelSerializer):
             "owner_id",
         ]
 
-
 class BoardCreateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(required=True)  # <--- fix
+    title = serializers.CharField(required=True) 
 
-    members = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False,
-        default=[]
-    )
+    members = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False, default=[] )
 
     class Meta:
         model = Board
@@ -35,20 +29,15 @@ class BoardCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         members_ids = validated_data.pop("members", [])
         request = self.context.get("request")
-
         board = Board.objects.create(owner=request.user, title=validated_data["title"])
-
         if members_ids:
             board.members.set(members_ids)
-
         board.members.add(request.user)
         return board
 
     def to_representation(self, instance):
         return BoardSerializer(instance, context=self.context).data
     
-
-
 class BoardMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -77,16 +66,12 @@ class BoardDetailSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "owner_id", "members", "tasks"]
         
     def get_tasks(self, obj):
-        # Alle Tasks des Boards zurückgeben
         tasks = Task.objects.filter(board=obj)
         return TaskSerializer(tasks, many=True).data
   
-    
 
 class BoardUpdateSerializer(serializers.ModelSerializer):
-    members = serializers.ListField(
-        child=serializers.IntegerField(), write_only=True, required=False
-    )
+    members = serializers.ListField( child=serializers.IntegerField(), write_only=True, required=False)
     owner_data = BoardMemberSerializer(source="owner", read_only=True)
     members_data = BoardMemberSerializer(source="members", many=True, read_only=True)
 
@@ -97,11 +82,9 @@ class BoardUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         members_ids = validated_data.pop("members", None)
         
-        # Titel ändern
         instance.title = validated_data.get("title", instance.title)
         instance.save()
 
-        # Mitglieder aktualisieren (nur wenn übergeben)
         if members_ids is not None:
             instance.members.set(members_ids)
 
@@ -111,3 +94,8 @@ class EmailCheckSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "fullname"]
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Kein User mit dieser E-Mail gefunden.")
+        return value

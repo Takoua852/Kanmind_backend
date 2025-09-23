@@ -81,7 +81,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
 class CommentDetailView(generics.RetrieveDestroyAPIView):
     queryset = Comment.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsCommentAuthor]
 
     serializer_class = CommentSerializer
 
