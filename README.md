@@ -79,20 +79,23 @@ Feel free to adjust project names, paths, or add more details as needed!
 ## 📚 API Endpoints
 
 | Method | Endpoint                               | Description                             |
-|--------|----------------------------------------|-----------------------------------------|
+
 🔑 Authentication
+
 | POST   | /api/registration/                     | Register a new user                     |
 | POST   | /api/login/                            | User login                              |
 | GET    | /api/email-check/                      | Check if an email is already registered |
-|--------|----------------------------------------|-----------------------------------------|
+
 📋 Boards
+
 | GET    | /api/boards/                           | List all boards                         |
 | POST   | /api/boards/                           | Create a new board                      |
 | GET    | /api/boards/{id}/                      | Retrieve board by ID                    |
 | PATCH  | /api/boards/{id}/                      | Partially update board by ID            |
 | DELETE | /api/boards/{id}/                      | Delete board by ID                      |
-|--------|----------------------------------------|-----------------------------------------|
+
 ✅ Tasks
+
 | GET    | /api/tasks/assigned-to-me/             | List tasks assigned to the current user |
 | GET    | /api/tasks/reviewing/                  | List tasks the current user is reviewing|
 | POST   | /api/tasks/                            | Create a new task                       |
