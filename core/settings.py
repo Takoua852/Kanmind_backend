@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'kanban_app',
     'tasks_app',
-    'users_auth_app'
+    'users_auth_app',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -136,7 +137,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
-    ]
+    ],
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 AUTH_USER_MODEL = "users_auth_app.User"
