@@ -102,6 +102,6 @@ Feel free to adjust project names, paths, or add more details as needed!
 | POST   | /api/tasks/{id}/comments/              | Add a comment to a specific task        |
 | DELETE | /api/tasks/{id}/comments/{comment_id}/ | Delete a specific comment from a task   |
 
-📜 License
+## 📜 License
 
 This project is licensed under the [MIT License](LICENSE).
