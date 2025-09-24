@@ -49,20 +49,21 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## 🧪 Running Tests
+<!-- ## 🧪 Running Tests
 ```bash
 python manage.py test
-```
+``` -->
 
 ## 📂 Project Structure
 ```
 Kanmind_backend/
-├── manage.py
-├── kanmind_backend/      # Django project settings
-├── app/                  # Main application code
-├── requirements.txt
-├── .env
-└── README.md
+├── core/                 # Global settings, URLs, middleware
+├── kanban_app/           # Kanban board logic (boards, columns, etc.)
+├── tasks_app/            # Task management (CRUD, comments, assignments)
+├── users_auth_app/       # Authentication & user management
+├── manage.py             # Django management script
+├── requirements.txt      # Project dependencies
+└── README.md             # Project documentation
 ```
 
 ## 💡 Notes
@@ -73,7 +74,6 @@ Kanmind_backend/
 ---
 
 Feel free to adjust project names, paths, or add more details as needed!
-
 
 
 ## 📚 API Endpoints
@@ -102,3 +102,7 @@ Feel free to adjust project names, paths, or add more details as needed!
 | POST   | /api/tasks/{id}/comments/              | Add a comment to a specific task        |
 | DELETE | /api/tasks/{id}/comments/{comment_id}/ | Delete a specific comment from a task   |
 
+📜 License
+
+This project is licensed under the MIT License.
+See the LICENSE file for details.
