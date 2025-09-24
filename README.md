@@ -16,4 +16,4 @@ Frontend is maintained in a separate repository.
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/Takoua852/Kanmind_backend.git
-cd kanmind_2025_25_09
+cd kanmind
