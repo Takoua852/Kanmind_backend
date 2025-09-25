@@ -1,20 +1,6 @@
 from rest_framework.permissions import BasePermission
 from tasks_app.models import Task
 
-class IsBoardMember(BasePermission):
-    """
-    Erlaubt Zugriff nur, wenn der User Mitglied des Boards der Task ist.
-    """
-
-    def has_permission(self, request, view):
-        task_id = view.kwargs.get("task_id")
-        if not task_id:
-            return False
-        try:
-            task = Task.objects.get(id=task_id)
-        except Task.DoesNotExist:
-            return False
-        return task.board.members.filter(id=request.user.id).exists()
     
 class IsBoardMemberOrOwner(BasePermission):
     """

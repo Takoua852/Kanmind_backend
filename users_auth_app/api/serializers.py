@@ -22,14 +22,5 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
 
-    def validate(self, data):
-        user = authenticate(email=data["email"], password=data["password"])
-        if not user:
-            raise serializers.ValidationError("Ungültige Zugangsdaten.")
-        data["user"] = user
-        return data
 
