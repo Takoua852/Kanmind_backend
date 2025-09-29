@@ -22,5 +22,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+class EmailCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "fullname"]
 
-
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Kein User mit dieser E-Mail gefunden.")
+        return value

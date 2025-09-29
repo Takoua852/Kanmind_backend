@@ -1,6 +1,6 @@
 
-from rest_framework import generics, status
-from kanban_app.api.serializers import BoardSerializer, BoardCreateSerializer,BoardDetailSerializer, BoardUpdateSerializer, EmailCheckSerializer
+from rest_framework import generics
+from kanban_app.api.serializers import BoardSerializer, BoardCreateSerializer,BoardDetailSerializer, BoardUpdateSerializer
 from kanban_app.models import Board
 from .permissions import  IsBoardMemberOrOwner,IsBoardOwner
 from rest_framework.permissions import IsAuthenticated
@@ -37,20 +37,3 @@ class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied("Nur der Owner kann das Board löschen.")
         instance.delete()
 
-class EmailCheckView(generics.GenericAPIView):
-    serializer_class = EmailCheckSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        email = request.query_params.get("email")
-        
-        if not email:
-            return Response({"detail": "E-Mail-Parameter fehlt"}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            user = User.objects.get(email=email)
-            serializer = self.get_serializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"detail": "Email nicht gefunden"}, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return Response({"detail": "Interner Serverfehler"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

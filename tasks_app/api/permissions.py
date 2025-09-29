@@ -24,7 +24,6 @@ class IsTaskOwnerOrBoardOwner(BasePermission):
                 obj.created_by == request.user
                 or obj.board.owner == request.user
             )
-        # für andere Methoden nicht zuständig
         return True
     
 class IsCommentAuthor(BasePermission):
