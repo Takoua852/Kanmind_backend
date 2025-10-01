@@ -1,10 +1,13 @@
 from rest_framework.permissions import BasePermission
-from tasks_app.models import Task
 
     
 class IsBoardMemberOrOwner(BasePermission):
     """
-    Erlaubt Zugriff nur, wenn der User Owner oder Mitglied des Boards der Task ist.
+    Permission to allow access only if the user is the board owner or a member of the board.
+
+    Applies to tasks:
+    - The user must be the owner of the board the task belongs to, or a member.
+    - Superusers always have access.
     """
     def has_object_permission(self, request, view, obj):
         return (obj.board.owner == request.user or
@@ -13,19 +16,29 @@ class IsBoardMemberOrOwner(BasePermission):
     
 
 class IsTaskOwnerOrBoardOwner(BasePermission):
+
     """
-    Erlaubt DELETE nur, wenn der User Task-Ersteller oder Board-Owner ist.
-    Für GET/PATCH reicht weiterhin IsBoardMemberOrOwner.
+    Permission to allow DELETE only if the user is the task owner or the board owner.
+
+    Other HTTP methods (GET, PATCH, etc.) are allowed for all users who pass other permissions.
+    Superusers can always delete.
     """
     def has_object_permission(self, request, view, obj):
-        # DELETE -> nur Ersteller oder Board-Owner
         if request.method == "DELETE":
             return (
-                obj.created_by == request.user
-                or obj.board.owner == request.user
+                obj.owner == request.user or
+                obj.board.owner == request.user or
+                request.user.is_superuser
             )
         return True
     
+    
 class IsCommentAuthor(BasePermission):
+    """
+    Permission to allow only the author of a comment to access or modify it.
+
+    Example use cases:
+    - DELETE: only the comment author can delete
+    """
     def has_object_permission(self, request, view, obj):
         return obj.author == request.user

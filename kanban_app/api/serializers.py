@@ -5,6 +5,19 @@ from tasks_app.models import Task
 
 
 class BoardSerializer(serializers.ModelSerializer):
+
+    """
+    Serialize a Board instance for list or read operations.
+
+    Fields:
+    - id: Board ID
+    - title: Board title
+    - member_count: Number of members in the board
+    - ticket_count: Total number of tasks in the board
+    - tasks_to_do_count: Number of tasks with status 'to-do'
+    - tasks_high_prio_count: Number of tasks with high priority
+    - owner_id: ID of the user who owns the board
+    """
     class Meta:
         model = Board
         fields = [
@@ -18,6 +31,15 @@ class BoardSerializer(serializers.ModelSerializer):
         ]
 
 class BoardCreateSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for creating a new Board.
+
+    - title: Board title (required)
+    - members: List of user IDs to add as members (optional)
+    
+    The owner of the board is automatically set to the logged-in user.
+    """
     title = serializers.CharField(required=True) 
 
     members = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False, default=[] )
@@ -39,11 +61,23 @@ class BoardCreateSerializer(serializers.ModelSerializer):
         return BoardSerializer(instance, context=self.context).data
     
 class BoardMemberSerializer(serializers.ModelSerializer):
+
+    """
+    Serialize basic user info for board members or task assignees/reviewers.
+    """
     class Meta:
         model = User
         fields = ["id", "email", "fullname"]
 
 class TaskSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for Task objects.
+
+    - assignee: Nested BoardMemberSerializer
+    - reviewer: Nested BoardMemberSerializer
+    - comments_count: Number of comments on the task
+    """
     assignee = BoardMemberSerializer(read_only=True)
     reviewer = BoardMemberSerializer(read_only=True)
     comments_count = serializers.SerializerMethodField()
@@ -57,6 +91,14 @@ class TaskSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
 class BoardDetailSerializer(serializers.ModelSerializer):
+
+    """
+    Detailed serializer for a Board, including members and tasks.
+
+    - members: Nested BoardMemberSerializer (read-only)
+    - tasks: List of tasks in this board (nested TaskSerializer)
+    - owner_id: ID of the owner
+    """
     members = BoardMemberSerializer(many=True, read_only=True)
     tasks = serializers.SerializerMethodField()
     owner_id = serializers.IntegerField(source="owner.id", read_only=True)
@@ -71,6 +113,14 @@ class BoardDetailSerializer(serializers.ModelSerializer):
   
 
 class BoardUpdateSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for updating a Board.
+
+    - members: List of user IDs to set as members
+    - owner_data: Nested owner info (read-only)
+    - members_data: Nested members info (read-only)
+    """
     members = serializers.ListField( child=serializers.IntegerField(), write_only=True, required=False)
     owner_data = BoardMemberSerializer(source="owner", read_only=True)
     members_data = BoardMemberSerializer(source="members", many=True, read_only=True)
@@ -90,7 +140,13 @@ class BoardUpdateSerializer(serializers.ModelSerializer):
 
         return instance
 
+
+
 class EmailCheckSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for checking if a user exists by email.
+    """
     class Meta:
         model = User
         fields = ["id", "email", "fullname"]

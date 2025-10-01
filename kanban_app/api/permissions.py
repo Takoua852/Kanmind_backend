@@ -4,7 +4,12 @@ from rest_framework.permissions import BasePermission
      
 class IsBoardMemberOrOwner(permissions.BasePermission):
     """
-    Zugriff nur für Owner oder Mitglieder des Boards.
+    Permission to allow access only to the board owner or its members.
+
+    Rules:
+    - Board owner can access all actions.
+    - Members of the board can access.
+    - Superusers can access any board.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -23,5 +28,10 @@ class IsBoardMemberOrOwner(permissions.BasePermission):
     
 
 class IsBoardOwner(BasePermission):
+    """
+    Permission to allow access only to the board owner.
+
+    Useful for actions like DELETE or sensitive updates.
+    """
     def has_object_permission(self, request, view, obj):
         return obj.owner == request.user
