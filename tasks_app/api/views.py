@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from tasks_app.models import Task, Comment
 from .serializers import TaskSerializer, TaskUpdateSerializer, CommentSerializer
-from .permissions import IsBoardMemberOrOwner, IsTaskOwnerOrBoardOwner, IsCommentAuthor
+from .permissions import IsBoardMemberOrOwner, IsTaskOwnerOrBoardMember, IsCommentAuthor
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from drf_spectacular.utils import extend_schema
@@ -52,7 +52,7 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     - DELETE: Delete task (only owner or board owner)
     """
     queryset = Task.objects.all()
-    permission_classes = [IsAuthenticated, IsTaskOwnerOrBoardOwner]
+    permission_classes = [IsAuthenticated, IsTaskOwnerOrBoardMember]
 
     def get_serializer_class(self):
         
@@ -135,7 +135,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
     POST /tasks/<task_id>/comments/
         - Create a new comment for the task (author is automatically set to the logged-in user)
     """
-    permission_classes = [IsAuthenticated, IsBoardMemberOrOwner]
+    permission_classes = [IsAuthenticated, IsTaskOwnerOrBoardMember]
     serializer_class = CommentSerializer  
 
     def get_queryset(self):

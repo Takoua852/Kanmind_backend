@@ -7,17 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from users_auth_app.models import User
-from drf_spectacular.utils import extend_schema
 
 
-@extend_schema(
-    request=BoardCreateSerializer,
-    responses=BoardSerializer,
-    description=(
-        "List all boards the current user has access to or create a new board. "
-        "User must be the owner, a member, or a superuser."
-    )
-)
+
+
 
 class BoardListView(generics.ListCreateAPIView):
 
@@ -39,14 +32,7 @@ class BoardListView(generics.ListCreateAPIView):
             return BoardCreateSerializer
         return BoardSerializer
 
-@extend_schema(
-    request=BoardUpdateSerializer,
-    responses=BoardDetailSerializer,
-    description=(
-        "Retrieve, update, or delete a board. "
-        "Only the board owner can delete the board."
-    )
-)
+
 class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     """
@@ -67,15 +53,9 @@ class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied("Nur der Owner kann das Board löschen.")
         instance.delete()
 
-@extend_schema(
-    responses=EmailCheckSerializer,
-    description=(
-        "Check if a user exists by email. "
-        "Returns 200 with user data if found, 404 if not found."
-    )
-)
+
 class EmailCheckView(generics.GenericAPIView):
-    
+
     """
     GET: Check if a user with the given email exists.
     """
