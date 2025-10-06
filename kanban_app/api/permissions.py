@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
+from rest_framework.exceptions import NotAuthenticated
 
      
 class IsBoardMemberOrOwner(permissions.BasePermission):
@@ -11,13 +12,19 @@ class IsBoardMemberOrOwner(permissions.BasePermission):
     - Members of the board can access.
     - Superusers can access any board.
     """
+    # def has_permission(self, request, view):
+    #     return request.user and request.user.is_authenticated
 
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            raise NotAuthenticated("Der Benutzer muss eingeloggt sein.")
+        return True
+    
     def has_object_permission(self, request, view, obj):
-        # Zugriff erlaubt, wenn User = Owner
+      
         if obj.owner == request.user:
             return True
 
-        # Zugriff erlaubt, wenn User Mitglied des Boards ist
         if request.user in obj.members.all():
             return True
         
@@ -35,3 +42,15 @@ class IsBoardOwner(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         return obj.owner == request.user
+    
+
+class IsAuthenticatedBoardMemberOrOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return (
+            obj.owner == request.user
+            or request.user in obj.members.all()
+            or request.user.is_superuser
+        )

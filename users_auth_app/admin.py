@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
-    list_display = ["email", "fullname", "is_staff", "is_active"]
+    list_display = ["id","email", "fullname", "is_staff", "is_active"]
     list_filter = ["is_staff", "is_active", "is_superuser"]
     
     fieldsets = (
