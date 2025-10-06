@@ -69,8 +69,6 @@ Kanmind_backend/
 ## 💡 Notes
 - The `.gitignore` file ensures that sensitive data and the virtual environment are not included in the repository.
 - For production, configure your database and secret keys securely.
-- More documentation will be added soon.
-
 ---
 
 Feel free to adjust project names, paths, or add more details as needed!
