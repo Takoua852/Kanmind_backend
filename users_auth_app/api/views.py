@@ -17,8 +17,11 @@ class RegistrationView(APIView):
     - Returns auth token, user ID, fullname, and email on success
     - Returns validation errors on failure
     """
+    permission_classes = [AllowAny]
     def post(self, request):
+     
         serializer = RegistrationSerializer(data=request.data)
+       
         if serializer.is_valid():
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
