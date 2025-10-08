@@ -140,10 +140,12 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         task = get_object_or_404(Task, pk=self.kwargs['pk'])
+        self.check_object_permissions(self.request, task)
         return task.comments.all().order_by("created_at")
 
     def perform_create(self, serializer):
         task = get_object_or_404(Task, pk=self.kwargs['pk'])
+        self.check_object_permissions(self.request, task)
         serializer.save(task=task, author=self.request.user)
 
 

@@ -30,16 +30,19 @@ class IsTaskOwnerOrBoardMember(BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
+ 
         if hasattr(obj, "task"):
             obj = obj.task
-        if request.method == "DELETE":
-            return (
-                obj.owner == request.user or
-                obj.board.members.filter(
-                    id=request.user.id).exists() or request.user.is_superuser
-            )
-        return True
 
+        board = getattr(obj, "board", None)
+        if not board:
+            return False
+
+        is_owner = board.owner == request.user
+        is_member = board.members.filter(id=request.user.id).exists()
+        is_superuser = request.user.is_superuser
+
+        return is_owner or is_member or is_superuser
 
 class IsCommentAuthor(BasePermission):
     """
