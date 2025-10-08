@@ -3,7 +3,7 @@ from .models import Task, Comment
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "board", "assignee", "reviewer", "status", "priority", "due_date", "comments_count")
+    list_display = ("id", "title", "board", "board_id","assignee", "reviewer", "status", "priority", "due_date", "comments_count")
     list_filter = ("status", "priority", "due_date", "board")
     search_fields = ("title", "description", "assignee__email", "reviewer__email")
     raw_id_fields = ("assignee", "reviewer")  

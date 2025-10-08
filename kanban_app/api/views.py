@@ -9,9 +9,6 @@ from rest_framework.exceptions import PermissionDenied
 from users_auth_app.models import User
 
 
-
-
-
 class BoardListView(generics.ListCreateAPIView):
 
     """
@@ -50,7 +47,7 @@ class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance):
         if instance.owner != self.request.user:
-            raise PermissionDenied("Nur der Owner kann das Board löschen.")
+            raise PermissionDenied("only the owner can delete the board.")
         instance.delete()
 
 
@@ -66,12 +63,12 @@ class EmailCheckView(generics.GenericAPIView):
         email = request.query_params.get("email")
 
         if not email:
-            return Response({"detail": "E-Mail-Parameter fehlt"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "E-Mail doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(email=email)
             serializer = self.get_serializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response({"detail": "Email nicht gefunden"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Email not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception:
-            return Response({"detail": "Interner Serverfehler"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"detail": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

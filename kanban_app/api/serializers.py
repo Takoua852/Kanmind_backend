@@ -129,6 +129,17 @@ class BoardUpdateSerializer(serializers.ModelSerializer):
         model = Board
         fields = ["id", "title", "members", "owner_data", "members_data"]
 
+    def validate_members(self, value):
+        invalid_ids = [uid for uid in value if not User.objects.filter(id=uid).exists()]
+        if invalid_ids:
+            raise serializers.ValidationError(f"Diese User-IDs existieren nicht: {invalid_ids}")
+        return value
+
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError("Empty update data is not allowed.")
+        return attrs
+
     def update(self, instance, validated_data):
         members_ids = validated_data.pop("members", None)
         

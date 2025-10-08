@@ -101,7 +101,7 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            "title", "description", "status", "priority",
+            "id","title", "description", "status", "priority",
             "assignee", "reviewer", "assignee_id", "reviewer_id", "due_date"
         ]
 
