@@ -62,6 +62,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "assignee", "reviewer", "assignee_id", "reviewer_id",
             "due_date", "comments_count"
         ]
+
+
     def get_comments_count(self, obj):
         """
         Returns the number of comments related to this task.
@@ -113,12 +115,11 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         assignee_id = data.get("assignee_id")
         reviewer_id = data.get("reviewer_id")
 
-        if assignee_id and not board.members.filter(id=assignee_id).exists():
-            raise serializers.ValidationError(
-                "Assignee muss Mitglied des Boards sein.")
-        if reviewer_id and not board.members.filter(id=reviewer_id).exists():
-            raise serializers.ValidationError(
-                "Reviewer muss Mitglied des Boards sein.")
+        if assignee_id and not (board.owner.id == assignee_id or board.members.filter(id=assignee_id).exists()):
+         raise serializers.ValidationError("Assignee muss Mitglied des Boards sein.")
+        if reviewer_id and not (board.owner.id == reviewer_id or board.members.filter(id=reviewer_id).exists()):
+         raise serializers.ValidationError("Reviewer muss Mitglied des Boards sein.")
+        
         return data
 
     def update(self, instance, validated_data):
@@ -165,9 +166,16 @@ class CommentSerializer(serializers.ModelSerializer):
     - content: Comment text
     """
     author = serializers.CharField(source="author.fullname", read_only=True)
+    content = serializers.CharField(required=True, allow_blank=False)
+     
 
     class Meta:
         model = Comment
         fields = ["id", "created_at", "author", "content"]
+
+    def validate_content(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Content don't be empty.")
+        return value
 
 

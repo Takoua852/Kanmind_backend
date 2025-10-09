@@ -2,13 +2,12 @@
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from kanban_app.models import Board
 from tasks_app.models import Task, Comment
 from .serializers import TaskSerializer, TaskUpdateSerializer, CommentSerializer
 from .permissions import IsBoardMemberOrOwner, IsTaskOwnerOrBoardMember, IsCommentAuthor
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from drf_spectacular.utils import extend_schema
-
 
 
 class TaskCreateView(generics.CreateAPIView):
@@ -29,8 +28,17 @@ class TaskCreateView(generics.CreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsBoardMemberOrOwner]
 
-
     def create(self, request, *args, **kwargs):
+        board_id = request.data.get("board")
+        if not board_id:
+            return Response({"detail": "Board-ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            Board.objects.get(id=board_id)
+        except Board.DoesNotExist:
+            return Response(
+                {"error": "Board does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         task = serializer.save(owner=request.user)
@@ -55,7 +63,6 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsTaskOwnerOrBoardMember]
 
     def get_serializer_class(self):
-        
         """
         Return appropriate serializer depending on request method.
         - GET: TaskSerializer (read-only)
@@ -66,7 +73,6 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         return TaskUpdateSerializer
 
     def patch(self, request, *args, **kwargs):
-
         """
         Partially update a task instance.
         """
@@ -77,7 +83,6 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(TaskUpdateSerializer(task).data, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
-
         """
         Delete a task instance.
         Only allowed if the user is the task owner or the board owner.
@@ -136,7 +141,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
         - Create a new comment for the task (author is automatically set to the logged-in user)
     """
     permission_classes = [IsAuthenticated, IsTaskOwnerOrBoardMember]
-    serializer_class = CommentSerializer  
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
         task = get_object_or_404(Task, pk=self.kwargs['pk'])
@@ -150,7 +155,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
 
 class CommentDetailView(generics.RetrieveDestroyAPIView):
-    
+
     """
     Retrieve or delete a specific comment for a task.
 
@@ -167,18 +172,17 @@ class CommentDetailView(generics.RetrieveDestroyAPIView):
     permission_classes = [IsAuthenticated, IsCommentAuthor]
 
     def get_object(self):
-
         """
         Retrieve the comment object based on task_pk and comment_pk from the URL.
         Checks object-level permissions.
         """
         task = get_object_or_404(Task, pk=self.kwargs['task_pk'])
-        comment = get_object_or_404(Comment, pk=self.kwargs['comment_pk'], task=task)
+        comment = get_object_or_404(
+            Comment, pk=self.kwargs['comment_pk'], task=task)
         self.check_object_permissions(self.request, comment)
         return comment
 
     def perform_destroy(self, instance):
-
         """
         Additional safety check in case IsCommentAuthor permission is bypassed.
         """
