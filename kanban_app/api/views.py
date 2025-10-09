@@ -19,10 +19,7 @@ class BoardListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return [
-            board for board in Board.objects.all()
-            if board.owner == user or user in board.members.all() or user.is_superuser
-        ]
+        return (Board.objects.filter(owner=user) | Board.objects.filter(members__id=user.id)).distinct()
 
     def get_serializer_class(self):
         if self.request.method == 'POST':

@@ -116,10 +116,10 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         reviewer_id = data.get("reviewer_id")
 
         if assignee_id and not (board.owner.id == assignee_id or board.members.filter(id=assignee_id).exists()):
-         raise serializers.ValidationError("Assignee muss Mitglied des Boards sein.")
+         raise serializers.ValidationError("Assignee is not a member of the board.")
         if reviewer_id and not (board.owner.id == reviewer_id or board.members.filter(id=reviewer_id).exists()):
-         raise serializers.ValidationError("Reviewer muss Mitglied des Boards sein.")
-        
+         raise serializers.ValidationError("Reviewer is not a member of the board.")
+
         return data
 
     def update(self, instance, validated_data):
@@ -138,7 +138,7 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
                 try:
                     instance.assignee = User.objects.get(id=assignee_id)
                 except ObjectDoesNotExist:
-                    raise serializers.ValidationError("Assignee existiert nicht.")
+                    raise serializers.ValidationError("Assignee does not exist.")
             else:
                 instance.assignee = None 
         
@@ -147,7 +147,7 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
                 try:
                     instance.reviewer = User.objects.get(id=reviewer_id)
                 except ObjectDoesNotExist:
-                    raise serializers.ValidationError("Reviewer existiert nicht.")
+                    raise serializers.ValidationError("Reviewer does not exist.")
             else:
                 instance.reviewer = None
 
