@@ -8,7 +8,7 @@ The frontend is maintained in a separate repository.
 ## 🛠 Technologies
 - Python 3.x
 - Django
-- SQLite (default) or PostgreSQL (if configured)
+- SQLite (default) 
 - python-dotenv
 
 ## 🚀 Getting Started
@@ -36,7 +36,6 @@ Create a `.env` file in the project root and add your settings (example):
 ```
 SECRET_KEY=your_secret_key
 DEBUG=True
-DATABASE_URL=sqlite:///db.sqlite3
 ```
 
 ### 5. Apply migrations
@@ -48,22 +47,20 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+Server will be available at:
+[text](http://127.0.0.1:8000/)
 
-<!-- ## 🧪 Running Tests
-```bash
-python manage.py test
-``` -->
 
 ## 📂 Project Structure
 ```
 Kanmind_backend/
-├── core/                 # Global settings, URLs, middleware
-├── kanban_app/           # Kanban board logic (boards, columns, etc.)
+├── core/                 # Project settings, URLs, middleware
+├── kanban_app/           # Board management logic
 ├── tasks_app/            # Task management (CRUD, comments, assignments)
 ├── users_auth_app/       # Authentication & user management
 ├── manage.py             # Django management script
 ├── requirements.txt      # Project dependencies
-└── README.md             # Project documentation
+└── README.md             # Documentation
 ```
 
 ## 💡 Notes
@@ -76,29 +73,44 @@ Feel free to adjust project names, paths, or add more details as needed!
 
 ## 📚 API Endpoints
 
-| Method | Endpoint                               | Description                             |
-|--------|----------------------------------------|-----------------------------------------|
 🔑 Authentication
-| POST   | /api/registration/                     | Register a new user                     |
-| POST   | /api/login/                            | User login                              |
-| GET    | /api/email-check/                      | Check if an email is already registered |
-|--------|----------------------------------------|-----------------------------------------|
+| Method | Endpoint           | Description                             |
+| ------ | ------------------ | --------------------------------------- |
+| POST   | /api/registration/ | Register a new user                     |
+| POST   | /api/login/        | User login                              |
+| GET    | /api/email-check/  | Check if an email is already registered |
+
 📋 Boards
-| GET    | /api/boards/                           | List all boards                         |
-| POST   | /api/boards/                           | Create a new board                      |
-| GET    | /api/boards/{id}/                      | Retrieve board by ID                    |
-| PATCH  | /api/boards/{id}/                      | Partially update board by ID            |
-| DELETE | /api/boards/{id}/                      | Delete board by ID                      |
-|--------|----------------------------------------|-----------------------------------------|
-✅ Tasks
-| GET    | /api/tasks/assigned-to-me/             | List tasks assigned to the current user |
-| GET    | /api/tasks/reviewing/                  | List tasks the current user is reviewing|
-| POST   | /api/tasks/                            | Create a new task                       |
-| PATCH  | /api/tasks/{id}/                       | Partially update task by ID             |
-| DELETE | /api/tasks/{id}/                       | Delete task by ID                       |
-| GET    | /api/tasks/{id}/comments/              | List comments for a specific task       |
-| POST   | /api/tasks/{id}/comments/              | Add a comment to a specific task        |
-| DELETE | /api/tasks/{id}/comments/{comment_id}/ | Delete a specific comment from a task   |
+| Method | Endpoint          | Description            |
+| ------ | ----------------- | ---------------------- |
+| GET    | /api/boards/      | List all boards        |
+| POST   | /api/boards/      | Create a new board     |
+| GET    | /api/boards/{id}/ | Retrieve board by ID   |
+| PATCH  | /api/boards/{id}/ | Update board (partial) |
+| DELETE | /api/boards/{id}/ | Delete board           |
+
+✅ Tasks                                                                                 
+| Method | Endpoint                               | Description                        |
+| ------ | -------------------------------------- | ---------------------------------- |
+| GET    | /api/tasks/assigned-to-me/             | Tasks assigned to current user     |
+| GET    | /api/tasks/reviewing/                  | Tasks under review by current user |
+| POST   | /api/tasks/                            | Create a new task                  |
+| PATCH  | /api/tasks/{id}/                       | Update task (partial)              |
+| DELETE | /api/tasks/{id}/                       | Delete task                        |
+| GET    | /api/tasks/{id}/comments/              | List comments for a task           |
+| POST   | /api/tasks/{id}/comments/              | Add a comment                      |
+| DELETE | /api/tasks/{id}/comments/{comment_id}/ | Delete a comment                   |
+
+
+## 🔐 Environment Notes
+Never commit your .env file
+Keep your SECRET_KEY private
+Use proper environment variables in production
+
+## 💡 Notes
+.gitignore excludes sensitive files and virtual environments
+SQLite is used by default for development
+
 
 ## 📜 License
 
