@@ -23,4 +23,18 @@ if not User.objects.filter(email=email).exists():
     print("Superuser created")
 else:
     print("Superuser already exists")
+
+
+guest_email = "kevin@mail.de"
+guest_password = "asdasdasd"
+
+if not User.objects.filter(email=guest_email).exists():
+    User.objects.create_user(
+        email=guest_email,
+        fullname="Guest User",
+        password=guest_password
+    )
+    print("Guest user created")
+else:
+    print("Guest user already exists")
 EOF
