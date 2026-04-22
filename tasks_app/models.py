@@ -47,7 +47,8 @@ class Task(models.Model):
     updated_at = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
-        return f"{self.title}(Board:{self.board.title})"
+        board_title = self.board.title if self.board_id else "No Board"
+        return f"{self.title} (Board: {board_title})"
 
     @property
     def comments_count(self):
@@ -76,4 +77,6 @@ class Comment(models.Model):
     content = models.TextField(null=False, blank=False)
 
     def __str__(self):
-     return f"Comment by {self.author.fullname} on {self.task.title}"
+        author_name = self.author.fullname if self.author else "Unknown"
+        task_title = self.task.title if self.task else "No Task"
+        return f"Comment by {author_name} on {task_title}"
